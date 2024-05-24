@@ -1,4 +1,4 @@
-from app import create_app, db
+from app import create_app, db, bcrypt
 from app.models.models import User, Student, Subject, Grade
 from datetime import datetime
 
@@ -7,11 +7,11 @@ def seed_database():
     with app.app_context():
         # Создание пользователей
         teachers = [
-            User(username=f'преподаватель{i}', email=f'teacher{i}@example.com', password=f'teacher{i}', role='teacher')
+            User(username=f'преподаватель{i}', email=f'teacher{i}@example.com', password=bcrypt.generate_password_hash(f'teacher{i}').decode('utf-8'), role='teacher')
             for i in range(1, 6)
         ]
         students = [
-            User(username=f'студент{i}', email=f'student{i}@example.com', password=f'student{i}', role='student')
+            User(username=f'студент{i}', email=f'student{i}@example.com', password=bcrypt.generate_password_hash(f'student{i}').decode('utf-8'), role='student')
             for i in range(1, 21)
         ]
         
