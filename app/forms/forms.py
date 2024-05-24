@@ -11,6 +11,7 @@ class RegistrationForm(FlaskForm):
     role = SelectField('Роль', choices=[('student', 'Студент'), ('teacher', 'Преподаватель')], validators=[DataRequired()])
     access_code = StringField('Код доступа (только для преподавателей)')
     submit = SubmitField('Зарегистрироваться')
+
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user:
