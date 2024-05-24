@@ -111,6 +111,7 @@ cython_debug/
 *.iml
 *.ipr
 *.iws
+.vs
 
 # Log files
 *.log
