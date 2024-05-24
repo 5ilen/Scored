@@ -50,7 +50,7 @@ Student Performance Tracker — это веб-приложение для упр
 
 ### Data Flow Diagram (DFD)
 
-![Data Flow Diagram](path/to/dfd.png)
+![Data Flow Diagram](app/static/images/dfd.png)
 
 ### Entity Relationship Diagram (ERD)
 
