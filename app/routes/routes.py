@@ -17,12 +17,15 @@ def register():
         return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Ваш аккаунт был создан!', 'success')
-        return redirect(url_for('main.login'))
+        if form.role.data == 'teacher' and form.access_code.data != '1':
+            flash('Неверный код доступа для преподавателей', 'danger')
+        else:
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('Ваш аккаунт был создан!', 'success')
+            return redirect(url_for('main.login'))
     return render_template('register.html', title='Регистрация', form=form)
 
 @main.route("/login", methods=['GET', 'POST'])
