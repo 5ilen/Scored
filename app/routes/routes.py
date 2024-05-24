@@ -18,7 +18,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         if form.role.data == 'teacher' and form.access_code.data != '1':
-            flash('Неверный код доступа для преподавателей', 'danger')
+            form.access_code.errors.append('Неверный код доступа для преподавателей.')
         else:
             hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
             user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)

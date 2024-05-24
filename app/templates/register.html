@@ -11,7 +11,7 @@
             {{ form.username.label(class="form-label") }} 
             {{ form.username(class="form-control") }}
             {% if form.username.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                 {% for error in form.username.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
@@ -22,7 +22,7 @@
             {{ form.email.label(class="form-label") }} 
             {{ form.email(class="form-control") }}
             {% if form.email.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                 {% for error in form.email.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
@@ -33,7 +33,7 @@
             {{ form.password.label(class="form-label") }} 
             {{ form.password(class="form-control") }}
             {% if form.password.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                 {% for error in form.password.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
@@ -44,7 +44,7 @@
             {{ form.confirm_password.label(class="form-label") }} 
             {{ form.confirm_password(class="form-control") }}
             {% if form.confirm_password.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                 {% for error in form.confirm_password.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
@@ -55,18 +55,18 @@
             {{ form.role.label(class="form-label") }} 
             {{ form.role(class="form-control") }}
             {% if form.role.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                 {% for error in form.role.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
                 </div>
             {% endif %}
         </div>
-        <div class="form-group" id="access-code-field" style="display:none;">
+        <div class="form-group" id="access-code-field" style="display: none;">
             {{ form.access_code.label(class="form-label") }} 
             {{ form.access_code(class="form-control") }}
             {% if form.access_code.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                 {% for error in form.access_code.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
@@ -84,13 +84,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const roleField = document.querySelector('select[name="role"]');
     const accessCodeField = document.getElementById('access-code-field');
     
-    roleField.addEventListener('change', function () {
+    function toggleAccessCodeField() {
         if (roleField.value === 'teacher') {
             accessCodeField.style.display = 'block';
         } else {
             accessCodeField.style.display = 'none';
         }
-    });
+    }
+
+    roleField.addEventListener('change', toggleAccessCodeField);
+
+    // Call function on page load to set initial state
+    toggleAccessCodeField();
 });
 </script>
 {% endblock %}
