@@ -46,7 +46,7 @@ Student Performance Tracker — это веб-приложение для упр
 
 ### Use Case Diagram
 
-![Use Case Diagram](app/static/images/use_case_diagram.png)
+![Use Case Diagram](app/static/images/use_case_diagram2.png)
 
 ### Data Flow Diagram (DFD)
 
