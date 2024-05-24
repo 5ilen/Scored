@@ -26,8 +26,11 @@ body {
 }
 
 .jumbotron {
-    background: rgba(0, 123, 255, 0.9);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    text-shadow: none;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .jumbotron .btn-primary, .jumbotron .btn-secondary {
