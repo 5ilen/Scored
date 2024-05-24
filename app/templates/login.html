@@ -1,15 +1,17 @@
 {% extends "base.html" %}
+
 {% block title %}Вход{% endblock %}
+
 {% block content %}
-<div class="form-container">
-    <h2>Вход</h2>
+<div class="form-container mt-5">
+    <h2 class="text-center">Вход</h2>
     <form method="POST" action="{{ url_for('main.login') }}">
         {{ form.hidden_tag() }}
         <div class="form-group">
-            {{ form.email.label(class="form-label") }} 
+            {{ form.email.label(class="form-label") }}
             {{ form.email(class="form-control") }}
             {% if form.email.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                 {% for error in form.email.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
@@ -17,10 +19,10 @@
             {% endif %}
         </div>
         <div class="form-group">
-            {{ form.password.label(class="form-label") }} 
+            {{ form.password.label(class="form-label") }}
             {{ form.password(class="form-control") }}
             {% if form.password.errors %}
-                <div class="invalid-feedback">
+                <div class="invalid-feedback d-block">
                 {% for error in form.password.errors %}
                     <div>{{ error }}</div>
                 {% endfor %}
@@ -28,10 +30,10 @@
             {% endif %}
         </div>
         <div class="form-group form-check">
-            {{ form.remember(class="form-check-input") }} 
+            {{ form.remember(class="form-check-input") }}
             {{ form.remember.label(class="form-check-label") }}
         </div>
-        <div>
+        <div class="text-center">
             {{ form.submit(class="btn btn-primary") }}
         </div>
     </form>
