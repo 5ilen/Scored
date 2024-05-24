@@ -11,6 +11,15 @@ class RegistrationForm(FlaskForm):
     role = SelectField('Роль', choices=[('student', 'Студент'), ('teacher', 'Преподаватель')], validators=[DataRequired()])
     access_code = StringField('Код доступа (только для преподавателей)')
     submit = SubmitField('Зарегистрироваться')
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('Это имя пользователя уже занято. Пожалуйста, выберите другое.')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('Этот адрес электронной почты уже используется. Пожалуйста, выберите другой.')
 
 class LoginForm(FlaskForm):
     email = StringField('Электронная почта', validators=[DataRequired(), Email()])
