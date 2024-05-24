@@ -21,9 +21,9 @@ def register():
         user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been created!', 'success')
+        flash('Ваш аккаунт был создан!', 'success')
         return redirect(url_for('main.login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Регистрация', form=form)
 
 @main.route("/login", methods=['GET', 'POST'])
 def login():
@@ -37,8 +37,8 @@ def login():
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+            flash('Не удалось войти. Пожалуйста, проверьте электронную почту и пароль', 'danger')
+    return render_template('login.html', title='Вход', form=form)
 
 @main.route("/logout")
 def logout():
