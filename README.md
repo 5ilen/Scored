@@ -10,7 +10,7 @@ Student Performance Tracker — это веб-приложение для упр
 
 1. Клонируйте репозиторий:
     ```bash
-    git clone https://github.com/your-username/StudentPerformanceTracker.git
+    git clone https://github.com/Silen/StudentPerformanceTracker.git
     ```
 
 2. Перейдите в директорию проекта:
@@ -72,4 +72,4 @@ Student Performance Tracker — это веб-приложение для упр
 
 ## Контакты
 
-Для вопросов и предложений обращайтесь по адресу: [your-email@example.com](mailto:your-email@example.com)
+Для вопросов и предложений обращайтесь по адресу: [silennemoy@gmail.com](mailto:silennemoy@gmail.com)
