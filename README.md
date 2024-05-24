@@ -10,35 +10,45 @@ Scored — это веб-приложение для управления усп
 
 1. Клонируйте репозиторий:
     ```bash
-    git clone https://github.com/5ilen/Scored.git
+    git clone https://github.com/your-username/StudentPerformanceTracker.git
     ```
 
 2. Перейдите в директорию проекта:
     ```bash
-    cd Scored
+    cd StudentPerformanceTracker
     ```
 
 3. Постройте Docker-образ:
     ```bash
-    docker compose build
+    docker-compose build
     ```
 
 4. Запустите контейнеры:
     ```bash
-    docker compose up -d
+    docker-compose up -d
     ```
 
 5. Выполните миграции базы данных:
     ```bash
-    docker compose run web flask db init
-    docker compose run web flask db migrate -m "Initial migration"
-    docker compose run web flask db upgrade
+    docker-compose run web flask db init
+    docker-compose run web flask db migrate -m "Initial migration"
+    docker-compose run web flask db upgrade
     ```
 
-6. Заполните базу данных начальными данными (при необходимости):
+6. Запустите приложение:
     ```bash
-    docker compose run web python reset_db.py
-    docker compose run web python seed_db.py
+    docker-compose up
+    ```
+
+Приложение будет доступно по адресу `http://localhost:5000`.
+
+## Дополнительные команды
+
+Если вам нужно сбросить и заполнить базу данных начальными данными, выполните следующие команды:
+
+    ```bash
+    docker-compose run web python reset_db.py
+    docker-compose run web python seed_db.py
     ```
 
 Приложение будет доступно по адресу `http://localhost:5000`.
