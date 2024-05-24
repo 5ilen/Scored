@@ -7,68 +7,74 @@
     <h2>Регистрация</h2>
     <form method="POST" action="{{ url_for('main.register') }}">
         {{ form.hidden_tag() }}
-        <div>
-            {{ form.username.label }} {{ form.username() }}
+        <div class="form-group">
+            {{ form.username.label(class="form-label") }} 
+            {{ form.username(class="form-control") }}
             {% if form.username.errors %}
-                <ul>
+                <div class="invalid-feedback">
                 {% for error in form.username.errors %}
-                    <li>{{ error }}</li>
+                    <div>{{ error }}</div>
                 {% endfor %}
-                </ul>
+                </div>
             {% endif %}
         </div>
-        <div>
-            {{ form.email.label }} {{ form.email() }}
+        <div class="form-group">
+            {{ form.email.label(class="form-label") }} 
+            {{ form.email(class="form-control") }}
             {% if form.email.errors %}
-                <ul>
+                <div class="invalid-feedback">
                 {% for error in form.email.errors %}
-                    <li>{{ error }}</li>
+                    <div>{{ error }}</div>
                 {% endfor %}
-                </ul>
+                </div>
             {% endif %}
         </div>
-        <div>
-            {{ form.password.label }} {{ form.password() }}
+        <div class="form-group">
+            {{ form.password.label(class="form-label") }} 
+            {{ form.password(class="form-control") }}
             {% if form.password.errors %}
-                <ul>
+                <div class="invalid-feedback">
                 {% for error in form.password.errors %}
-                    <li>{{ error }}</li>
+                    <div>{{ error }}</div>
                 {% endfor %}
-                </ul>
+                </div>
             {% endif %}
         </div>
-        <div>
-            {{ form.confirm_password.label }} {{ form.confirm_password() }}
+        <div class="form-group">
+            {{ form.confirm_password.label(class="form-label") }} 
+            {{ form.confirm_password(class="form-control") }}
             {% if form.confirm_password.errors %}
-                <ul>
+                <div class="invalid-feedback">
                 {% for error in form.confirm_password.errors %}
-                    <li>{{ error }}</li>
+                    <div>{{ error }}</div>
                 {% endfor %}
-                </ul>
+                </div>
             {% endif %}
         </div>
-        <div>
-            {{ form.role.label }} {{ form.role() }}
+        <div class="form-group">
+            {{ form.role.label(class="form-label") }} 
+            {{ form.role(class="form-control") }}
             {% if form.role.errors %}
-                <ul>
+                <div class="invalid-feedback">
                 {% for error in form.role.errors %}
-                    <li>{{ error }}</li>
+                    <div>{{ error }}</div>
                 {% endfor %}
-                </ul>
+                </div>
             {% endif %}
         </div>
-        <div id="access-code-field" style="display:none;">
-            {{ form.access_code.label }} {{ form.access_code() }}
+        <div class="form-group" id="access-code-field" style="display:none;">
+            {{ form.access_code.label(class="form-label") }} 
+            {{ form.access_code(class="form-control") }}
             {% if form.access_code.errors %}
-                <ul>
+                <div class="invalid-feedback">
                 {% for error in form.access_code.errors %}
-                    <li>{{ error }}</li>
+                    <div>{{ error }}</div>
                 {% endfor %}
-                </ul>
+                </div>
             {% endif %}
         </div>
         <div>
-            {{ form.submit() }}
+            {{ form.submit(class="btn btn-primary") }}
         </div>
     </form>
 </div>

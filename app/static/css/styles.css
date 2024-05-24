@@ -2,45 +2,12 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.container {
-    margin: 20px;
-}
-
 .form-container {
-    width: 300px;
+    max-width: 600px;
     margin: 0 auto;
+    padding: 15px;
 }
 
-.alert {
-    padding: 10px;
-    margin-bottom: 15px;
-}
-
-nav {
-    background-color: #333;
-    color: white;
-    padding: 10px;
-}
-
-nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-nav ul li {
-    float: left;
-}
-
-nav ul li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-nav ul li a:hover {
-    background-color: #111;
+.invalid-feedback {
+    color: red;
 }
