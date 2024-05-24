@@ -1,9 +1,9 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from app import db, bcrypt
-from app.forms.forms import RegistrationForm, LoginForm
+from app.forms.forms import RegistrationForm, LoginForm, StudentForm, SubjectForm, GradeForm
 from app.models.models import User, Student, Subject, Grade
 from flask_login import login_user, current_user, logout_user, login_required
-from datetime import datetime  # Импортируем datetime
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -80,7 +80,8 @@ def logout():
 def dashboard_teacher():
     if current_user.role != 'teacher':
         return redirect(url_for('main.home'))
-    return render_template('dashboard_teacher.html')
+    student_count_by_form = db.session.query(Student.education_form, db.func.count(Student.id)).group_by(Student.education_form).all()
+    return render_template('dashboard_teacher.html', student_count_by_form=student_count_by_form)
 
 @main.route("/dashboard/student")
 @login_required
@@ -94,3 +95,46 @@ def dashboard_student():
     grades = Grade.query.filter_by(student_id=student.id).all()
     subjects = {grade.subject_id: Subject.query.get(grade.subject_id) for grade in grades}
     return render_template('dashboard_student.html', student=student, grades=grades, subjects=subjects)
+
+@main.route("/teacher/manage_students", methods=['GET', 'POST'])
+@login_required
+def manage_students():
+    if current_user.role != 'teacher':
+        return redirect(url_for('main.home'))
+    form = StudentForm()
+    if form.validate_on_submit():
+        student = Student(name=form.name.data, admission_year=form.admission_year.data,
+                          education_form=form.education_form.data, group_name=form.group_name.data, user_id=form.user_id.data)
+        db.session.add(student)
+        db.session.commit()
+        flash('Студент добавлен!', 'success')
+        return redirect(url_for('main.manage_students'))
+    return render_template('manage_students.html', form=form)
+
+@main.route("/teacher/manage_subjects", methods=['GET', 'POST'])
+@login_required
+def manage_subjects():
+    if current_user.role != 'teacher':
+        return redirect(url_for('main.home'))
+    form = SubjectForm()
+    if form.validate_on_submit():
+        subject = Subject(name=form.name.data, semester=form.semester.data, hours=form.hours.data, assessment_type=form.assessment_type.data)
+        db.session.add(subject)
+        db.session.commit()
+        flash('Предмет добавлен!', 'success')
+        return redirect(url_for('main.manage_subjects'))
+    return render_template('manage_subjects.html', form=form)
+
+@main.route("/teacher/manage_grades", methods=['GET', 'POST'])
+@login_required
+def manage_grades():
+    if current_user.role != 'teacher':
+        return redirect(url_for('main.home'))
+    form = GradeForm()
+    if form.validate_on_submit():
+        grade = Grade(year=form.year.data, semester=form.semester.data, student_id=form.student_id.data, subject_id=form.subject_id.data, grade=form.grade.data)
+        db.session.add(grade)
+        db.session.commit()
+        flash('Оценка добавлена!', 'success')
+        return redirect(url_for('main.manage_grades'))
+    return render_template('manage_grades.html', form=form)

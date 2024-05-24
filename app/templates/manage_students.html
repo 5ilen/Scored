@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Управление студентами{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Управление студентами</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+            {% if form.name.errors %}
+                <div class="invalid-feedback d-block">
+                {% for error in form.name.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.admission_year.label(class="form-label") }}
+            {{ form.admission_year(class="form-control") }}
+            {% if form.admission_year.errors %}
+                <div class="invalid-feedback d-block">
+                {% for error in form.admission_year.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.education_form.label(class="form-label") }}
+            {{ form.education_form(class="form-control") }}
+            {% if form.education_form.errors %}
+                <div class="invalid-feedback d-block">
+                {% for error in form.education_form.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.group_name.label(class="form-label") }}
+            {{ form.group_name(class="form-control") }}
+            {% if form.group_name.errors %}
+                <div class="invalid-feedback d-block">
+                {% for error in form.group_name.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.user_id.label(class="form-label") }}
+            {{ form.user_id(class="form-control") }}
+            {% if form.user_id.errors %}
+                <div class="invalid-feedback d-block">
+                {% for error in form.user_id.errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="text-center">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -12,33 +12,37 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
+            <h3>Статистика студентов по форме обучения</h3>
+            <ul class="list-group">
+                {% for form, count in student_count_by_form %}
+                <li class="list-group-item">{{ form }}: {{ count }} студентов</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
             <h3>Управление студентами</h3>
             <ul class="list-group">
-                <!-- Пример элемента управления студентами -->
                 <li class="list-group-item">
-                    <a href="#">Добавить нового студента</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="#">Просмотр всех студентов</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="#">Редактировать информацию о студенте</a>
+                    <a href="{{ url_for('main.manage_students') }}">Добавить/Изменить студентов</a>
                 </li>
             </ul>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h3>Управление предметами</h3>
             <ul class="list-group">
-                <!-- Пример элемента управления предметами -->
                 <li class="list-group-item">
-                    <a href="#">Добавить новый предмет</a>
+                    <a href="{{ url_for('main.manage_subjects') }}">Добавить/Изменить предметы</a>
                 </li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h3>Управление оценками</h3>
+            <ul class="list-group">
                 <li class="list-group-item">
-                    <a href="#">Просмотр всех предметов</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="#">Редактировать информацию о предмете</a>
+                    <a href="{{ url_for('main.manage_grades') }}">Добавить/Изменить оценки</a>
                 </li>
             </ul>
         </div>
