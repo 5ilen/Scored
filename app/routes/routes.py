@@ -54,5 +54,8 @@ def dashboard():
     if current_user.role == 'teacher':
         return render_template('dashboard_teacher.html')
     elif current_user.role == 'student':
-        return render_template('dashboard_student.html')
+        student = Student.query.filter_by(user_id=current_user.id).first()
+        grades = Grade.query.filter_by(student_id=student.id).all()
+        subjects = {grade.subject_id: Subject.query.get(grade.subject_id) for grade in grades}
+        return render_template('dashboard_student.html', student=student, grades=grades, subjects=subjects)
     return redirect(url_for('main.home'))

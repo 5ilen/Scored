@@ -2,6 +2,10 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.container {
+    margin: 20px;
+}
+
 .form-container {
     max-width: 600px;
     margin: 0 auto;
@@ -10,4 +14,16 @@ body {
 
 .invalid-feedback {
     color: red;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+}
+
+.table tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
 }

@@ -5,6 +5,35 @@
 {% block content %}
 <div class="container">
     <h1 class="my-4">Кабинет студента</h1>
-    <p>Здесь вы можете просматривать свои данные.</p>
+    <p>Добро пожаловать, {{ student.name }}!</p>
+    <h2>Ваши данные:</h2>
+    <ul>
+        <li>Год поступления: {{ student.admission_year }}</li>
+        <li>Форма обучения: {{ student.education_form }}</li>
+        <li>Группа: {{ student.group_name }}</li>
+    </ul>
+    <h2>Ваши оценки:</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Предмет</th>
+                <th>Семестр</th>
+                <th>Часы</th>
+                <th>Тип оценки</th>
+                <th>Оценка</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grade in grades %}
+            <tr>
+                <td>{{ subjects[grade.subject_id].name }}</td>
+                <td>{{ grade.semester }}</td>
+                <td>{{ subjects[grade.subject_id].hours }}</td>
+                <td>{{ subjects[grade.subject_id].assessment_type }}</td>
+                <td>{{ grade.grade }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
