@@ -10,6 +10,11 @@ main = Blueprint('main', __name__)
 @main.route("/")
 @main.route("/home")
 def home():
+    if current_user.is_authenticated:
+        if current_user.role == 'teacher':
+            return redirect(url_for('main.dashboard_teacher'))
+        elif current_user.role == 'student':
+            return redirect(url_for('main.dashboard_student'))
     return render_template('home.html')
 
 @main.route("/register", methods=['GET', 'POST'])
@@ -42,7 +47,10 @@ def register():
 @main.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        if current_user.role == 'teacher':
+            return redirect(url_for('main.dashboard_teacher'))
+        elif current_user.role == 'student':
+            return redirect(url_for('main.dashboard_student'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -59,17 +67,22 @@ def logout():
     logout_user()
     return redirect(url_for('main.home'))
 
-@main.route("/dashboard")
+@main.route("/dashboard/teacher")
 @login_required
-def dashboard():
-    if current_user.role == 'teacher':
-        return render_template('dashboard_teacher.html')
-    elif current_user.role == 'student':
-        student = Student.query.filter_by(user_id=current_user.id).first()
-        if student is None:
-            flash('Студент не найден.', 'danger')
-            return redirect(url_for('main.home'))
-        grades = Grade.query.filter_by(student_id=student.id).all()
-        subjects = {grade.subject_id: Subject.query.get(grade.subject_id) for grade in grades}
-        return render_template('dashboard_student.html', student=student, grades=grades, subjects=subjects)
-    return redirect(url_for('main.home'))
+def dashboard_teacher():
+    if current_user.role != 'teacher':
+        return redirect(url_for('main.home'))
+    return render_template('dashboard_teacher.html')
+
+@main.route("/dashboard/student")
+@login_required
+def dashboard_student():
+    if current_user.role != 'student':
+        return redirect(url_for('main.home'))
+    student = Student.query.filter_by(user_id=current_user.id).first()
+    if student is None:
+        flash('Студент не найден.', 'danger')
+        return redirect(url_for('main.home'))
+    grades = Grade.query.filter_by(student_id=student.id).all()
+    subjects = {grade.subject_id: Subject.query.get(grade.subject_id) for grade in grades}
+    return render_template('dashboard_student.html', student=student, grades=grades, subjects=subjects)

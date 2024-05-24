@@ -22,9 +22,15 @@
                     <a class="nav-link" href="{{ url_for('main.home') }}">Главная</a>
                 </li>
                 {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.dashboard') }}">Личный кабинет</a>
-                    </li>
+                    {% if current_user.role == 'teacher' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.dashboard_teacher') }}">Личный кабинет</a>
+                        </li>
+                    {% elif current_user.role == 'student' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.dashboard_student') }}">Личный кабинет</a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.logout') }}">Выйти</a>
                     </li>
