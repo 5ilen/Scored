@@ -10,12 +10,12 @@ Scored — это веб-приложение для управления усп
 
 1. Клонируйте репозиторий:
     ```bash
-    git clone https://github.com/your-username/StudentPerformanceTracker.git
+    git clone https://github.com/5ilen/Scored.git
     ```
 
 2. Перейдите в директорию проекта:
     ```bash
-    cd StudentPerformanceTracker
+    cd Scored
     ```
 
 3. Постройте Docker-образ:
