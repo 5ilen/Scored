@@ -4,13 +4,13 @@
 
 Scored — это веб-приложение для управления успеваемостью студентов. Преподаватели могут добавлять и редактировать информацию о студентах, учебных планах и оценках, а студенты могут просматривать свои результаты.
 
-## Установка
+## Установка с использованием Docker
 
-Для установки и запуска проекта выполните следующие шаги:
+Для установки и запуска проекта с использованием Docker выполните следующие шаги:
 
 1. Клонируйте репозиторий:
     ```bash
-    git clone https://github.com/Silen/Scored.git
+    git clone https://github.com/5ilen/Scored.git
     ```
 
 2. Перейдите в директорию проекта:
@@ -18,29 +18,30 @@ Scored — это веб-приложение для управления усп
     cd Scored
     ```
 
-3. Создайте виртуальное окружение и активируйте его:
+3. Постройте Docker-образ:
     ```bash
-    python -m venv venv
-    source venv/bin/activate   # Для Windows используйте `venv\Scripts\activate`
+    docker compose build
     ```
 
-4. Установите зависимости:
+4. Запустите контейнеры:
     ```bash
-    pip install -r requirements.txt
+    docker compose up -d
     ```
 
-5. Сбросьте и заполните базу данных:
+5. Выполните миграции базы данных:
     ```bash
-    python reset_db.py
-    python seed_db.py
+    docker compose run web flask db init
+    docker compose run web flask db migrate -m "Initial migration"
+    docker compose run web flask db upgrade
     ```
 
-6. Запустите приложение:
+6. Заполните базу данных начальными данными (при необходимости):
     ```bash
-    python run.py
+    docker compose run web python reset_db.py
+    docker compose run web python seed_db.py
     ```
 
-Приложение будет доступно по адресу `http://127.0.0.1:5000/`.
+Приложение будет доступно по адресу `http://localhost:5000`.
 
 ## Схемы
 
