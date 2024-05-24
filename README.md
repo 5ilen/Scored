@@ -1,8 +1,8 @@
-# Student Performance Tracker
+# Scored
 
 ## Описание проекта
 
-Student Performance Tracker — это веб-приложение для управления успеваемостью студентов. Преподаватели могут добавлять и редактировать информацию о студентах, учебных планах и оценках, а студенты могут просматривать свои результаты.
+Scored — это веб-приложение для управления успеваемостью студентов. Преподаватели могут добавлять и редактировать информацию о студентах, учебных планах и оценках, а студенты могут просматривать свои результаты.
 
 ## Установка
 
@@ -10,12 +10,12 @@ Student Performance Tracker — это веб-приложение для упр
 
 1. Клонируйте репозиторий:
     ```bash
-    git clone https://github.com/Silen/StudentPerformanceTracker.git
+    git clone https://github.com/Silen/Scored.git
     ```
 
 2. Перейдите в директорию проекта:
     ```bash
-    cd StudentPerformanceTracker
+    cd Scored
     ```
 
 3. Создайте виртуальное окружение и активируйте его:
@@ -54,7 +54,7 @@ Student Performance Tracker — это веб-приложение для упр
 
 ### Entity Relationship Diagram (ERD)
 
-![Entity Relationship Diagram](path/to/erd.png)
+![Entity Relationship Diagram](app/static/images/edf.png)
 
 ## Структура проекта
 
