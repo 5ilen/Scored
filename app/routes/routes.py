@@ -20,7 +20,10 @@ def home():
 @main.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        if current_user.role == 'teacher':
+            return redirect(url_for('main.dashboard_teacher'))
+        elif current_user.role == 'student':
+            return redirect(url_for('main.dashboard_student'))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -57,7 +60,12 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('main.home'))
+            if not next_page or url_for('main.login') in next_page or url_for('main.register') in next_page:
+                if user.role == 'teacher':
+                    next_page = url_for('main.dashboard_teacher')
+                elif user.role == 'student':
+                    next_page = url_for('main.dashboard_student')
+            return redirect(next_page)
         else:
             flash('Не удалось войти. Пожалуйста, проверьте электронную почту и пароль', 'danger')
     return render_template('login.html', title='Вход', form=form)
