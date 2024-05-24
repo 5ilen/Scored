@@ -3,6 +3,7 @@ from app import db, bcrypt
 from app.forms.forms import RegistrationForm, LoginForm
 from app.models.models import User, Student, Subject, Grade
 from flask_login import login_user, current_user, logout_user, login_required
+from datetime import datetime  # Импортируем datetime
 
 main = Blueprint('main', __name__)
 
@@ -17,13 +18,23 @@ def register():
         return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        if form.role.data == 'teacher' and form.access_code.data != '1':
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            form.email.errors.append('Этот адрес электронной почты уже используется. Пожалуйста, выберите другой.')
+        elif form.role.data == 'teacher' and form.access_code.data != '1':
             form.access_code.errors.append('Неверный код доступа для преподавателей.')
         else:
             hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
             user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)
             db.session.add(user)
             db.session.commit()
+
+            if form.role.data == 'student':
+                student = Student(name=form.username.data, admission_year=datetime.now().year, 
+                                  education_form='day', group_name='default', user_id=user.id)
+                db.session.add(student)
+                db.session.commit()
+
             flash('Ваш аккаунт был создан!', 'success')
             return redirect(url_for('main.login'))
     return render_template('register.html', title='Регистрация', form=form)
@@ -55,6 +66,9 @@ def dashboard():
         return render_template('dashboard_teacher.html')
     elif current_user.role == 'student':
         student = Student.query.filter_by(user_id=current_user.id).first()
+        if student is None:
+            flash('Студент не найден.', 'danger')
+            return redirect(url_for('main.home'))
         grades = Grade.query.filter_by(student_id=student.id).all()
         subjects = {grade.subject_id: Subject.query.get(grade.subject_id) for grade in grades}
         return render_template('dashboard_student.html', student=student, grades=grades, subjects=subjects)
