@@ -8,7 +8,16 @@
 </head>
 <body>
     <nav>
-        <!-- Содержимое навигационной панели -->
+        <ul>
+            <li><a href="{{ url_for('main.home') }}">Главная</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('main.dashboard') }}">Личный кабинет</a></li>
+                <li><a href="{{ url_for('main.logout') }}">Выйти</a></li>
+            {% else %}
+                <li><a href="{{ url_for('main.login') }}">Вход</a></li>
+                <li><a href="{{ url_for('main.register') }}">Регистрация</a></li>
+            {% endif %}
+        </ul>
     </nav>
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
