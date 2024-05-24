@@ -54,7 +54,7 @@ Student Performance Tracker — это веб-приложение для упр
 
 ### Entity Relationship Diagram (ERD)
 
-![Entity Relationship Diagram](path/to/erd.png)
+![Entity Relationship Diagram](app/static/images/edf.png)
 
 ## Структура проекта
 
