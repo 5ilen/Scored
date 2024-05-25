@@ -37,7 +37,7 @@ def register():
             db.session.add(student)
             db.session.commit()
 
-        flash('Ваш аккаунт был создан!', 'success')
+        flash('Ваш аккаунт был создан! Вы можете войти в систему', 'success')
         return redirect(url_for('main.login'))
     return render_template('register.html', title='Регистрация', form=form)
 

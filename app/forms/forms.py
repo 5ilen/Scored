@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, BooleanField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
 from app.models.models import User, Student, Subject
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Имя пользователя', validators=[DataRequired()])
-    email = StringField('Электронная почта', validators=[DataRequired(), Email()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
+    username = StringField('Имя пользователя', validators=[DataRequired(), Length(min=3, max=50, message='Имя пользователя должно быть от 3 до 50 символов.')])
+    email = StringField('Email', validators=[DataRequired(), Email(message='Неверный формат email.')])
+    password = PasswordField('Пароль', validators=[DataRequired(), Length(min=6, message='Пароль должен быть не менее 6 символов.')])
     confirm_password = PasswordField('Подтвердите пароль', validators=[DataRequired(), EqualTo('password')])
     role = SelectField('Роль', choices=[('student', 'Студент'), ('teacher', 'Преподаватель')], validators=[DataRequired()])
     access_code = StringField('Код доступа (только для преподавателей)')
