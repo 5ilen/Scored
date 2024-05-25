@@ -115,7 +115,7 @@ def manage_grades():
 @main.route("/students/count", methods=['GET', 'POST'])
 @login_required
 def count_students():
-    form = EducationForm()  # Создадим форму для выбора формы обучения
+    form = EducationForm()
     count = None
     if form.validate_on_submit():
         count = Student.query.filter_by(education_form=form.education_form.data).count()
@@ -124,7 +124,7 @@ def count_students():
 @main.route("/subject/info", methods=['GET', 'POST'])
 @login_required
 def subject_info():
-    form = SubjectForm()  # Создадим форму для выбора дисциплины
+    form = SubjectForm()
     info = None
     if form.validate_on_submit():
         subject = Subject.query.filter_by(name=form.name.data).first()
@@ -139,11 +139,11 @@ def add_student():
     if form.validate_on_submit():
         try:
             student = Student(
-                name=form.name.data, 
+                name=form.name.data,
                 admission_year=form.admission_year.data,
-                education_form=form.education_form.data, 
+                education_form=form.education_form.data,
                 group_name=form.group_name.data,
-                user_id=form.user_id.data
+                user_id=current_user.id  # Использование ID текущего пользователя
             )
             db.session.add(student)
             db.session.commit()
@@ -183,9 +183,9 @@ def add_subject():
     if form.validate_on_submit():
         try:
             subject = Subject(
-                name=form.name.data, 
+                name=form.name.data,
                 semester=form.semester.data,
-                hours=form.hours.data, 
+                hours=form.hours.data,
                 assessment_type=form.assessment_type.data
             )
             db.session.add(subject)
@@ -226,9 +226,9 @@ def add_grade():
     if form.validate_on_submit():
         try:
             grade = Grade(
-                year=form.year.data, 
+                year=form.year.data,
                 semester=form.semester.data,
-                student_id=form.student_id.data, 
+                student_id=form.student_id.data,
                 subject_id=form.subject_id.data,
                 grade=form.grade.data
             )
@@ -264,4 +264,3 @@ def edit_grade(grade_id):
         form.subject_id.data = grade.subject_id
         form.grade.data = grade.grade
     return render_template('edit_grade.html', title='Редактировать оценку', form=form)
-

@@ -22,11 +22,12 @@ class Student(db.Model):
     name = db.Column(db.String(100), nullable=False)
     admission_year = db.Column(db.Integer, nullable=False)
     education_form = db.Column(db.String(20), nullable=False)
-    group_name = db.Column(db.String(50), nullable=False)
+    group_name = db.Column(db.String(20), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref='student', lazy=True)
 
     def __repr__(self):
-        return f"Student('{self.name}', '{self.admission_year}', '{self.education_form}', '{self.group_name}')"
+        return f"Student('{self.name}', '{self.group_name}')"
 
 class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,15 +37,17 @@ class Subject(db.Model):
     assessment_type = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
-        return f"Subject('{self.name}', '{self.semester}', '{self.hours}', '{self.assessment_type}')"
+        return f"Subject('{self.name}', 'Semester {self.semester}')"
 
 class Grade(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer, nullable=False)
     semester = db.Column(db.Integer, nullable=False)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    student = db.relationship('Student', backref='grades', lazy=True)
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
-    grade = db.Column(db.String(10), nullable=False)
+    subject = db.relationship('Subject', backref='grades', lazy=True)
+    grade = db.Column(db.String(2), nullable=False)
 
     def __repr__(self):
-        return f"Grade('{self.year}', '{self.semester}', '{self.grade}')"
+        return f"Grade('{self.year}', 'Semester {self.semester}', 'Grade {self.grade}')"

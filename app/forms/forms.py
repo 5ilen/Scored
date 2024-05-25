@@ -36,7 +36,6 @@ class StudentForm(FlaskForm):
     admission_year = IntegerField('Год поступления', validators=[DataRequired()])
     education_form = SelectField('Форма обучения', choices=[('дневная', 'Дневная'), ('вечерняя', 'Вечерняя'), ('заочная', 'Заочная')], validators=[DataRequired()])
     group_name = StringField('Номер группы', validators=[DataRequired()])
-    user_id = IntegerField('ID пользователя', validators=[DataRequired()])
     submit = SubmitField('Сохранить')
 
 class SubjectForm(FlaskForm):
@@ -49,7 +48,5 @@ class SubjectForm(FlaskForm):
 class GradeForm(FlaskForm):
     year = IntegerField('Год', validators=[DataRequired()])
     semester = IntegerField('Семестр', validators=[DataRequired()])
-    student_id = IntegerField('ID студента', validators=[DataRequired()])
-    subject_id = IntegerField('ID предмета', validators=[DataRequired()])
     grade = StringField('Оценка', validators=[DataRequired()])
     submit = SubmitField('Сохранить')
