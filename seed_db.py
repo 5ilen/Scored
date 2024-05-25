@@ -14,7 +14,7 @@ def generate_students(num_students):
         user = User(
             username=fake.user_name(),
             email=fake.email(),
-            password=bcrypt.generate_password_hash(fake.password()).decode('utf-8'),
+            password=bcrypt.generate_password_hash('student').decode('utf-8'),
             role='student'
         )
         db.session.add(user)
