@@ -3,50 +3,38 @@
 {% block title %}Личный кабинет студента{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="text-center">Личный кабинет студента</h2>
-            <p class="text-center">Добро пожаловать, {{ student.name }}!</p>
-            <hr>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Ваши данные</h3>
-            <ul class="list-group">
-                <li class="list-group-item">Год поступления: {{ student.admission_year }}</li>
-                <li class="list-group-item">Форма обучения: {{ student.education_form }}</li>
-                <li class="list-group-item">Группа: {{ student.group_name }}</li>
-            </ul>
-        </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <h3>Ваши оценки</h3>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Предмет</th>
-                        <th>Семестр</th>
-                        <th>Часы</th>
-                        <th>Тип оценки</th>
-                        <th>Оценка</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for grade in grades %}
-                    <tr>
-                        <td>{{ subjects[grade.subject_id].name }}</td>
-                        <td>{{ grade.semester }}</td>
-                        <td>{{ subjects[grade.subject_id].hours }}</td>
-                        <td>{{ subjects[grade.subject_id].assessment_type }}</td>
-                        <td>{{ grade.grade }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="container mt-5 body-white-bg">
+    <h1 class="text-center">Личный кабинет студента</h1>
+    <p class="text-center">Добро пожаловать, {{ student.name }}!</p>
+    <hr>
+    <h3>Ваши данные</h3>
+    <ul class="list-group mb-4">
+        <li class="list-group-item">Год поступления: {{ student.admission_year }}</li>
+        <li class="list-group-item">Форма обучения: {{ student.education_form }}</li>
+        <li class="list-group-item">Группа: {{ student.group_name }}</li>
+    </ul>
+    <h3>Ваши оценки</h3>
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Предмет</th>
+                <th>Семестр</th>
+                <th>Часы</th>
+                <th>Тип оценки</th>
+                <th>Оценка</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grade in grades %}
+            <tr>
+                <td>{{ subjects[grade.subject_id].name }}</td>
+                <td>{{ grade.semester }}</td>
+                <td>{{ subjects[grade.subject_id].hours }}</td>
+                <td>{{ subjects[grade.subject_id].assessment_type }}</td>
+                <td>{{ grade.grade }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
