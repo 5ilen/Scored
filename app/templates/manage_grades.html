@@ -4,35 +4,58 @@
 
 {% block content %}
 <div class="container mt-5 body-white-bg">
-    <h1 class="text-center">Управление оценками</h1>
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="d-flex align-items-center">
-            <a href="{{ url_for('main.dashboard_teacher') }}" class="btn btn-secondary mr-2">Назад</a>
-            <a class="btn btn-primary" href="{{ url_for('main.add_grade') }}">Добавить оценку</a>
+        <h1 class="text-center">Управление оценками</h1>
+        <div>
+            <a href="{{ url_for('main.add_grade') }}" class="btn btn-primary mr-2">Добавить оценку</a>
+            <a href="{{ url_for('main.dashboard_teacher') }}" class="btn btn-secondary">Назад</a>
         </div>
     </div>
-    <form class="form-inline mb-3">
-        <label for="filter_by" class="mr-2">Фильтр по имени студента:</label>
-        <input type="text" id="filter_by" name="filter_by" class="form-control mr-2" value="{{ filter_by }}">
-        <button type="submit" class="btn btn-primary">Фильтровать</button>
-    </form>
-    <div class="mb-3">
-        <label for="sort_by" class="form-label">Сортировать по:</label>
-        <select id="sort_by" class="form-select" onchange="location = this.value;">
-            <option value="{{ url_for('main.manage_grades', sort_by='grade', filter_by=filter_by) }}" {% if sort_by == 'grade' %}selected{% endif %}>Оценка</option>
-            <option value="{{ url_for('main.manage_grades', sort_by='year', filter_by=filter_by) }}" {% if sort_by == 'year' %}selected{% endif %}>Год</option>
-            <option value="{{ url_for('main.manage_grades', sort_by='semester', filter_by=filter_by) }}" {% if sort_by == 'semester' %}selected{% endif %}>Семестр</option>
-            <option value="{{ url_for('main.manage_grades', sort_by='student_id', filter_by=filter_by) }}" {% if sort_by == 'student_id' %}selected{% endif %}>Студент</option>
-            <option value="{{ url_for('main.manage_grades', sort_by='subject_id', filter_by=filter_by) }}" {% if sort_by == 'subject_id' %}selected{% endif %}>Предмет</option>
-        </select>
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <form method="GET" action="{{ url_for('main.manage_grades') }}" class="form-inline">
+                <label for="filter_by" class="mr-2">Фильтр по предмету:</label>
+                <input type="text" name="filter_by" id="filter_by" value="{{ request.args.get('filter_by', '') }}" class="form-control mr-2">
+                <button type="submit" class="btn btn-primary mr-2">Фильтровать</button>
+                <label for="sort_by" class="mr-2">Сортировать по:</label>
+                <select name="sort_by" id="sort_by" class="form-control" onchange="this.form.submit()">
+                    <option value="subject_id" {% if request.args.get('sort_by') == 'subject_id' %}selected{% endif %}>Предмет</option>
+                    <option value="student_id" {% if request.args.get('sort_by') == 'student_id' %}selected{% endif %}>Студент</option>
+                    <option value="year" {% if request.args.get('sort_by') == 'year' %}selected{% endif %}>Год</option>
+                    <option value="semester" {% if request.args.get('sort_by') == 'semester' %}selected{% endif %}>Семестр</option>
+                    <option value="grade" {% if request.args.get('sort_by') == 'grade' %}selected{% endif %}>Оценка</option>
+                </select>
+            </form>
+        </div>
     </div>
-    <ul class="list-group">
-        {% for grade in grades %}
-            <li class="list-group-item">
-                Студент: {{ grade.student.name }} - Предмет: {{ grade.subject.name }} - Оценка: {{ grade.grade }}
-                <a class="btn btn-sm btn-warning float-right" href="{{ url_for('main.edit_grade', grade_id=grade.id) }}">Редактировать</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Предмет</th>
+                <th>Студент</th>
+                <th>Год</th>
+                <th>Семестр</th>
+                <th>Оценка</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grade in grades %}
+            <tr>
+                <td>{{ grade.subject.name }}</td>
+                <td>{{ grade.student.name }}</td>
+                <td>{{ grade.year }}</td>
+                <td>{{ grade.semester }}</td>
+                <td>{{ grade.grade }}</td>
+                <td>
+                    <a href="{{ url_for('main.edit_grade', grade_id=grade.id) }}" class="btn btn-warning btn-sm">Редактировать</a>
+                    <form action="{{ url_for('main.delete_grade', grade_id=grade.id) }}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

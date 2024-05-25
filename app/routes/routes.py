@@ -20,53 +20,36 @@ def home():
 @main.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        if current_user.role == 'teacher':
-            return redirect(url_for('main.dashboard_teacher'))
-        elif current_user.role == 'student':
-            return redirect(url_for('main.dashboard_student'))
+        return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hashed_password, role=form.role.data)
         db.session.add(user)
         db.session.commit()
-
-        if form.role.data == 'student':
-            student = Student(name=form.username.data, admission_year=datetime.now().year, 
-                              education_form='day', group_name='default', user_id=user.id)
-            db.session.add(student)
-            db.session.commit()
-
         flash('Ваш аккаунт был создан! Вы можете войти в систему', 'success')
         return redirect(url_for('main.login'))
-    return render_template('register.html', title='Регистрация', form=form)
+    return render_template('register.html', title='Регистрация', form=form) 
 
 @main.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        if current_user.role == 'teacher':
-            return redirect(url_for('main.dashboard_teacher'))
-        elif current_user.role == 'student':
-            return redirect(url_for('main.dashboard_student'))
+        return redirect(url_for('main.home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            if not next_page or url_for('main.login') in next_page or url_for('main.register') in next_page:
-                if user.role == 'teacher':
-                    next_page = url_for('main.dashboard_teacher')
-                elif user.role == 'student':
-                    next_page = url_for('main.dashboard_student')
-            return redirect(next_page)
+            return redirect(next_page) if next_page else redirect(url_for('main.dashboard_teacher'))
         else:
-            flash('Не удалось войти. Пожалуйста, проверьте электронную почту и пароль', 'danger')
+            flash('Не удалось войти. Пожалуйста, проверьте email и пароль.', 'danger')
     return render_template('login.html', title='Вход', form=form)
 
 @main.route("/logout")
 def logout():
     logout_user()
+    flash('Вы вышли из системы', 'success')
     return redirect(url_for('main.home'))
 
 @main.route("/dashboard_teacher")
@@ -247,35 +230,118 @@ def edit_grade(grade_id):
         form.grade.data = grade.grade
     return render_template('edit_grade.html', title='Редактировать оценку', form=form)
 
-@main.route("/students/manage", methods=['GET'])
+@main.route("/students/manage", methods=['GET', 'POST'])
 @login_required
 def manage_students():
-    sort_by = request.args.get('sort_by', 'name')
-    filter_by = request.args.get('filter_by', '')
-    students = Student.query
-    if filter_by:
-        students = students.filter(Student.name.contains(filter_by))
-    students = students.order_by(sort_by).all()
-    return render_template('manage_students.html', title='Управление студентами', students=students, sort_by=sort_by, filter_by=filter_by)
+    form = request.form
+    sort_by = form.get('sort_by', 'name')
+    filter_by = form.get('filter_by', '')
 
-@main.route("/subjects/manage", methods=['GET'])
+    query = Student.query
+    if filter_by:
+        query = query.filter(Student.name.like(f'%{filter_by}%'))
+    if sort_by == 'name':
+        query = query.order_by(Student.name)
+    elif sort_by == 'admission_year':
+        query = query.order_by(Student.admission_year)
+    elif sort_by == 'education_form':
+        query = query.order_by(Student.education_form)
+    elif sort_by == 'group_name':
+        query = query.order_by(Student.group_name)
+
+    students = query.all()
+
+    return render_template('manage_students.html', students=students, sort_by=sort_by, filter_by=filter_by)
+
+@main.route("/subjects/manage", methods=['GET', 'POST'])
 @login_required
 def manage_subjects():
-    sort_by = request.args.get('sort_by', 'name')
-    filter_by = request.args.get('filter_by', '')
-    subjects = Subject.query
-    if filter_by:
-        subjects = subjects.filter(Subject.name.contains(filter_by))
-    subjects = subjects.order_by(sort_by).all()
-    return render_template('manage_subjects.html', title='Управление предметами', subjects=subjects, sort_by=sort_by, filter_by=filter_by)
+    form = request.form
+    sort_by = form.get('sort_by', 'name')
+    filter_by = form.get('filter_by', '')
 
-@main.route("/grades/manage", methods=['GET'])
+    query = Subject.query
+    if filter_by:
+        query = query.filter(Subject.name.like(f'%{filter_by}%'))
+    if sort_by == 'name':
+        query = query.order_by(Subject.name)
+    elif sort_by == 'semester':
+        query = query.order_by(Subject.semester)
+    elif sort_by == 'hours':
+        query = query.order_by(Subject.hours)
+    elif sort_by == 'assessment_type':
+        query = query.order_by(Subject.assessment_type)
+
+    subjects = query.all()
+
+    return render_template('manage_subjects.html', subjects=subjects, sort_by=sort_by, filter_by=filter_by)
+
+@main.route("/grades/manage", methods=['GET', 'POST'])
 @login_required
 def manage_grades():
-    sort_by = request.args.get('sort_by', 'grade')
-    filter_by = request.args.get('filter_by', '')
-    grades = Grade.query
+    form = request.form
+    sort_by = form.get('sort_by', 'subject_id')
+    filter_by = form.get('filter_by', '')
+
+    query = Grade.query
     if filter_by:
-        grades = grades.join(Student).filter(Student.name.contains(filter_by))
-    grades = grades.order_by(sort_by).all()
-    return render_template('manage_grades.html', title='Управление оценками', grades=grades, sort_by=sort_by, filter_by=filter_by)
+        query = query.filter(Grade.grade.like(f'%{filter_by}%'))
+    if sort_by == 'subject_id':
+        query = query.order_by(Grade.subject_id)
+    elif sort_by == 'student_id':
+        query = query.order_by(Grade.student_id)
+    elif sort_by == 'year':
+        query = query.order_by(Grade.year)
+    elif sort_by == 'semester':
+        query = query.order_by(Grade.semester)
+    elif sort_by == 'grade':
+        query = query.order_by(Grade.grade)
+
+    grades = query.all()
+
+    return render_template('manage_grades.html', grades=grades, sort_by=sort_by, filter_by=filter_by)
+
+@main.route("/subject/delete/<int:subject_id>", methods=['POST'])
+@login_required
+def delete_subject(subject_id):
+    if current_user.role != 'teacher':
+        return redirect(url_for('main.home'))
+    subject = Subject.query.get_or_404(subject_id)
+    try:
+        db.session.delete(subject)
+        db.session.commit()
+        flash('Предмет удален!', 'success')
+    except IntegrityError:
+        db.session.rollback()
+        flash('Ошибка удаления предмета!', 'danger')
+    return redirect(url_for('main.manage_subjects'))
+
+@main.route("/student/delete/<int:student_id>", methods=['POST'])
+@login_required
+def delete_student(student_id):
+    if current_user.role != 'teacher':
+        return redirect(url_for('main.home'))
+    student = Student.query.get_or_404(student_id)
+    try:
+        db.session.delete(student)
+        db.session.commit()
+        flash('Студент удален!', 'success')
+    except IntegrityError:
+        db.session.rollback()
+        flash('Ошибка удаления студента!', 'danger')
+    return redirect(url_for('main.manage_students'))
+
+@main.route("/grade/delete/<int:grade_id>", methods=['POST'])
+@login_required
+def delete_grade(grade_id):
+    if current_user.role != 'teacher':
+        return redirect(url_for('main.home'))
+    grade = Grade.query.get_or_404(grade_id)
+    try:
+        db.session.delete(grade)
+        db.session.commit()
+        flash('Оценка удалена!', 'success')
+    except IntegrityError:
+        db.session.rollback()
+        flash('Ошибка удаления оценки!', 'danger')
+    return redirect(url_for('main.manage_grades'))
