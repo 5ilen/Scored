@@ -3,9 +3,28 @@
 {% block title %}Управление предметами{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 body-white-bg">
     <h1 class="text-center">Управление предметами</h1>
-    <a class="btn btn-primary mb-3" href="{{ url_for('main.add_subject') }}">Добавить предмет</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center">
+            <a href="{{ url_for('main.dashboard_teacher') }}" class="btn btn-secondary mr-2">Назад</a>
+            <a class="btn btn-primary" href="{{ url_for('main.add_subject') }}">Добавить предмет</a>
+        </div>
+    </div>
+    <form class="form-inline mb-3">
+        <label for="filter_by" class="mr-2">Фильтр по названию:</label>
+        <input type="text" id="filter_by" name="filter_by" class="form-control mr-2" value="{{ filter_by }}">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+    </form>
+    <div class="mb-3">
+        <label for="sort_by" class="form-label">Сортировать по:</label>
+        <select id="sort_by" class="form-select" onchange="location = this.value;">
+            <option value="{{ url_for('main.manage_subjects', sort_by='name', filter_by=filter_by) }}" {% if sort_by == 'name' %}selected{% endif %}>Название</option>
+            <option value="{{ url_for('main.manage_subjects', sort_by='semester', filter_by=filter_by) }}" {% if sort_by == 'semester' %}selected{% endif %}>Семестр</option>
+            <option value="{{ url_for('main.manage_subjects', sort_by='hours', filter_by=filter_by) }}" {% if sort_by == 'hours' %}selected{% endif %}>Количество часов</option>
+            <option value="{{ url_for('main.manage_subjects', sort_by='assessment_type', filter_by=filter_by) }}" {% if sort_by == 'assessment_type' %}selected{% endif %}>Форма отчетности</option>
+        </select>
+    </div>
     <ul class="list-group">
         {% for subject in subjects %}
             <li class="list-group-item">

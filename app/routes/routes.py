@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from app import db, bcrypt
-from app.forms.forms import RegistrationForm, LoginForm, StudentForm, SubjectForm, GradeForm
+from app.forms.forms import RegistrationForm, LoginForm, StudentForm, SubjectForm, GradeForm, EducationForm
 from app.models.models import User, Student, Subject, Grade
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
@@ -94,24 +94,6 @@ def dashboard_student():
     subjects = {grade.subject_id: Subject.query.get(grade.subject_id) for grade in grades}
     return render_template('dashboard_student.html', student=student, grades=grades, subjects=subjects)
 
-@main.route("/manage/students", methods=['GET'])
-@login_required
-def manage_students():
-    students = Student.query.all()
-    return render_template('manage_students.html', students=students)
-
-@main.route("/manage/subjects", methods=['GET'])
-@login_required
-def manage_subjects():
-    subjects = Subject.query.all()
-    return render_template('manage_subjects.html', subjects=subjects)
-
-@main.route("/manage/grades", methods=['GET'])
-@login_required
-def manage_grades():
-    grades = Grade.query.all()
-    return render_template('manage_grades.html', grades=grades)
-
 @main.route("/students/count", methods=['GET', 'POST'])
 @login_required
 def count_students():
@@ -143,7 +125,7 @@ def add_student():
                 admission_year=form.admission_year.data,
                 education_form=form.education_form.data,
                 group_name=form.group_name.data,
-                user_id=current_user.id  # Использование ID текущего пользователя
+                user_id=current_user.id
             )
             db.session.add(student)
             db.session.commit()
@@ -264,3 +246,36 @@ def edit_grade(grade_id):
         form.subject_id.data = grade.subject_id
         form.grade.data = grade.grade
     return render_template('edit_grade.html', title='Редактировать оценку', form=form)
+
+@main.route("/students/manage", methods=['GET'])
+@login_required
+def manage_students():
+    sort_by = request.args.get('sort_by', 'name')
+    filter_by = request.args.get('filter_by', '')
+    students = Student.query
+    if filter_by:
+        students = students.filter(Student.name.contains(filter_by))
+    students = students.order_by(sort_by).all()
+    return render_template('manage_students.html', title='Управление студентами', students=students, sort_by=sort_by, filter_by=filter_by)
+
+@main.route("/subjects/manage", methods=['GET'])
+@login_required
+def manage_subjects():
+    sort_by = request.args.get('sort_by', 'name')
+    filter_by = request.args.get('filter_by', '')
+    subjects = Subject.query
+    if filter_by:
+        subjects = subjects.filter(Subject.name.contains(filter_by))
+    subjects = subjects.order_by(sort_by).all()
+    return render_template('manage_subjects.html', title='Управление предметами', subjects=subjects, sort_by=sort_by, filter_by=filter_by)
+
+@main.route("/grades/manage", methods=['GET'])
+@login_required
+def manage_grades():
+    sort_by = request.args.get('sort_by', 'grade')
+    filter_by = request.args.get('filter_by', '')
+    grades = Grade.query
+    if filter_by:
+        grades = grades.join(Student).filter(Student.name.contains(filter_by))
+    grades = grades.order_by(sort_by).all()
+    return render_template('manage_grades.html', title='Управление оценками', grades=grades, sort_by=sort_by, filter_by=filter_by)

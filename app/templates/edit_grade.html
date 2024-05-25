@@ -3,7 +3,7 @@
 {% block title %}Редактировать оценку{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 body-white-bg">
     <h1 class="text-center">Редактировать оценку</h1>
     <form method="POST" class="mt-4">
         {{ form.hidden_tag() }}
@@ -29,6 +29,7 @@
         </div>
         <div class="form-group">
             {{ form.submit(class="btn btn-primary") }}
+            <a href="{{ url_for('main.dashboard_teacher') }}" class="btn btn-secondary">Назад</a>
         </div>
     </form>
 </div>
