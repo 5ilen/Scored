@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Управление оценками</h1>
+    <h1 class="text-center">Управление оценками</h1>
     <a class="btn btn-primary mb-3" href="{{ url_for('main.add_grade') }}">Добавить оценку</a>
     <ul class="list-group">
         {% for grade in grades %}

@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Управление студентами</h1>
+    <h1 class="text-center">Управление студентами</h1>
     <a class="btn btn-primary mb-3" href="{{ url_for('main.add_student') }}">Добавить студента</a>
     <ul class="list-group">
         {% for student in students %}

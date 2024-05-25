@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, IntegerField, BooleanField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-from app.models.models import User
+from app.models.models import User, Student, Subject
 
 class RegistrationForm(FlaskForm):
     username = StringField('Имя пользователя', validators=[DataRequired()])
@@ -48,5 +48,12 @@ class SubjectForm(FlaskForm):
 class GradeForm(FlaskForm):
     year = IntegerField('Год', validators=[DataRequired()])
     semester = IntegerField('Семестр', validators=[DataRequired()])
+    student_id = SelectField('Студент', coerce=int, validators=[DataRequired()])  # Используем SelectField для выбора студента
+    subject_id = SelectField('Предмет', coerce=int, validators=[DataRequired()])  # Используем SelectField для выбора предмета
     grade = StringField('Оценка', validators=[DataRequired()])
     submit = SubmitField('Сохранить')
+
+    def __init__(self, *args, **kwargs):
+        super(GradeForm, self).__init__(*args, **kwargs)
+        self.student_id.choices = [(student.id, student.name) for student in Student.query.all()]
+        self.subject_id.choices = [(subject.id, subject.name) for subject in Subject.query.all()]
