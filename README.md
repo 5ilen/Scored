@@ -35,11 +35,6 @@ Scored — это веб-приложение для управления усп
     docker-compose run web flask db upgrade
     ```
 
-6. Запустите приложение:
-    ```bash
-    docker-compose up
-    ```
-
 Приложение будет доступно по адресу `http://localhost:5000`.
 
 ## Дополнительные команды
@@ -48,8 +43,6 @@ Scored — это веб-приложение для управления усп
     
     docker-compose run web python reset_db.py
     docker-compose run web python seed_db.py
-
-Приложение будет доступно по адресу `http://localhost:5000`.
 
 ## Схемы
 
