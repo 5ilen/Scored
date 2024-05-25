@@ -69,12 +69,16 @@ def logout():
     logout_user()
     return redirect(url_for('main.home'))
 
-@main.route("/dashboard/teacher")
+@main.route("/dashboard_teacher")
 @login_required
 def dashboard_teacher():
     if current_user.role != 'teacher':
         return redirect(url_for('main.home'))
-    student_count_by_form = db.session.query(Student.education_form, db.func.count(Student.id)).group_by(Student.education_form).all()
+    
+    student_count_by_form = db.session.query(
+        Student.education_form, db.func.count(Student.id)
+    ).group_by(Student.education_form).all()
+    
     return render_template('dashboard_teacher.html', student_count_by_form=student_count_by_form)
 
 @main.route("/dashboard/student")
@@ -90,45 +94,174 @@ def dashboard_student():
     subjects = {grade.subject_id: Subject.query.get(grade.subject_id) for grade in grades}
     return render_template('dashboard_student.html', student=student, grades=grades, subjects=subjects)
 
-@main.route("/teacher/manage_students", methods=['GET', 'POST'])
+@main.route("/manage/students", methods=['GET'])
 @login_required
 def manage_students():
-    if current_user.role != 'teacher':
-        return redirect(url_for('main.home'))
-    form = StudentForm()
-    if form.validate_on_submit():
-        student = Student(name=form.name.data, admission_year=form.admission_year.data,
-                          education_form=form.education_form.data, group_name=form.group_name.data, user_id=form.user_id.data)
-        db.session.add(student)
-        db.session.commit()
-        flash('Студент добавлен!', 'success')
-        return redirect(url_for('main.manage_students'))
-    return render_template('manage_students.html', form=form)
+    students = Student.query.all()
+    return render_template('manage_students.html', students=students)
 
-@main.route("/teacher/manage_subjects", methods=['GET', 'POST'])
+@main.route("/manage/subjects", methods=['GET'])
 @login_required
 def manage_subjects():
-    if current_user.role != 'teacher':
-        return redirect(url_for('main.home'))
-    form = SubjectForm()
-    if form.validate_on_submit():
-        subject = Subject(name=form.name.data, semester=form.semester.data, hours=form.hours.data, assessment_type=form.assessment_type.data)
-        db.session.add(subject)
-        db.session.commit()
-        flash('Предмет добавлен!', 'success')
-        return redirect(url_for('main.manage_subjects'))
-    return render_template('manage_subjects.html', form=form)
+    subjects = Subject.query.all()
+    return render_template('manage_subjects.html', subjects=subjects)
 
-@main.route("/teacher/manage_grades", methods=['GET', 'POST'])
+@main.route("/manage/grades", methods=['GET'])
 @login_required
 def manage_grades():
-    if current_user.role != 'teacher':
-        return redirect(url_for('main.home'))
+    grades = Grade.query.all()
+    return render_template('manage_grades.html', grades=grades)
+
+@main.route("/students/count", methods=['GET', 'POST'])
+@login_required
+def count_students():
+    form = EducationForm()  # Создадим форму для выбора формы обучения
+    count = None
+    if form.validate_on_submit():
+        count = Student.query.filter_by(education_form=form.education_form.data).count()
+    return render_template('count_students.html', form=form, count=count)
+
+@main.route("/subject/info", methods=['GET', 'POST'])
+@login_required
+def subject_info():
+    form = SubjectForm()  # Создадим форму для выбора дисциплины
+    info = None
+    if form.validate_on_submit():
+        subject = Subject.query.filter_by(name=form.name.data).first()
+        if subject:
+            info = {'hours': subject.hours, 'assessment_type': subject.assessment_type}
+    return render_template('subject_info.html', form=form, info=info)
+
+@main.route("/student/add", methods=['GET', 'POST'])
+@login_required
+def add_student():
+    form = StudentForm()
+    if form.validate_on_submit():
+        try:
+            student = Student(
+                name=form.name.data, 
+                admission_year=form.admission_year.data,
+                education_form=form.education_form.data, 
+                group_name=form.group_name.data,
+                user_id=form.user_id.data
+            )
+            db.session.add(student)
+            db.session.commit()
+            flash('Студент добавлен!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка при добавлении студента: {str(e)}', 'danger')
+    return render_template('add_student.html', title='Добавить студента', form=form)
+
+@main.route("/student/edit/<int:student_id>", methods=['GET', 'POST'])
+@login_required
+def edit_student(student_id):
+    student = Student.query.get_or_404(student_id)
+    form = StudentForm()
+    if form.validate_on_submit():
+        try:
+            student.name = form.name.data
+            student.admission_year = form.admission_year.data
+            student.education_form = form.education_form.data
+            student.group_name = form.group_name.data
+            db.session.commit()
+            flash('Информация о студенте обновлена!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка при редактировании студента: {str(e)}', 'danger')
+    elif request.method == 'GET':
+        form.name.data = student.name
+        form.admission_year.data = student.admission_year
+        form.education_form.data = student.education_form
+        form.group_name.data = student.group_name
+    return render_template('edit_student.html', title='Редактировать студента', form=form)
+
+@main.route("/subject/add", methods=['GET', 'POST'])
+@login_required
+def add_subject():
+    form = SubjectForm()
+    if form.validate_on_submit():
+        try:
+            subject = Subject(
+                name=form.name.data, 
+                semester=form.semester.data,
+                hours=form.hours.data, 
+                assessment_type=form.assessment_type.data
+            )
+            db.session.add(subject)
+            db.session.commit()
+            flash('Дисциплина добавлена!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка при добавлении дисциплины: {str(e)}', 'danger')
+    return render_template('add_subject.html', title='Добавить дисциплину', form=form)
+
+@main.route("/subject/edit/<int:subject_id>", methods=['GET', 'POST'])
+@login_required
+def edit_subject(subject_id):
+    subject = Subject.query.get_or_404(subject_id)
+    form = SubjectForm()
+    if form.validate_on_submit():
+        try:
+            subject.name = form.name.data
+            subject.semester = form.semester.data
+            subject.hours = form.hours.data
+            subject.assessment_type = form.assessment_type.data
+            db.session.commit()
+            flash('Информация о дисциплине обновлена!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка при редактировании дисциплины: {str(e)}', 'danger')
+    elif request.method == 'GET':
+        form.name.data = subject.name
+        form.semester.data = subject.semester
+        form.hours.data = subject.hours
+        form.assessment_type.data = subject.assessment_type
+    return render_template('edit_subject.html', title='Редактировать дисциплину', form=form)
+
+@main.route("/grade/add", methods=['GET', 'POST'])
+@login_required
+def add_grade():
     form = GradeForm()
     if form.validate_on_submit():
-        grade = Grade(year=form.year.data, semester=form.semester.data, student_id=form.student_id.data, subject_id=form.subject_id.data, grade=form.grade.data)
-        db.session.add(grade)
-        db.session.commit()
-        flash('Оценка добавлена!', 'success')
-        return redirect(url_for('main.manage_grades'))
-    return render_template('manage_grades.html', form=form)
+        try:
+            grade = Grade(
+                year=form.year.data, 
+                semester=form.semester.data,
+                student_id=form.student_id.data, 
+                subject_id=form.subject_id.data,
+                grade=form.grade.data
+            )
+            db.session.add(grade)
+            db.session.commit()
+            flash('Оценка добавлена!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка при добавлении оценки: {str(e)}', 'danger')
+    return render_template('add_grade.html', title='Добавить оценку', form=form)
+
+@main.route("/grade/edit/<int:grade_id>", methods=['GET', 'POST'])
+@login_required
+def edit_grade(grade_id):
+    grade = Grade.query.get_or_404(grade_id)
+    form = GradeForm()
+    if form.validate_on_submit():
+        try:
+            grade.year = form.year.data
+            grade.semester = form.semester.data
+            grade.student_id = form.student_id.data
+            grade.subject_id = form.subject_id.data
+            grade.grade = form.grade.data
+            db.session.commit()
+            flash('Оценка обновлена!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка при редактировании оценки: {str(e)}', 'danger')
+    elif request.method == 'GET':
+        form.year.data = grade.year
+        form.semester.data = grade.semester
+        form.student_id.data = grade.student_id
+        form.subject_id.data = grade.subject_id
+        form.grade.data = grade.grade
+    return render_template('edit_grade.html', title='Редактировать оценку', form=form)
+

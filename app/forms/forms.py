@@ -28,20 +28,23 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
 
+class EducationForm(FlaskForm):
+    education_form = SelectField('Форма обучения', choices=[('дневная', 'Дневная'), ('вечерняя', 'Вечерняя'), ('заочная', 'Заочная')], validators=[DataRequired()])
+    submit = SubmitField('Посчитать студентов')
 class StudentForm(FlaskForm):
-    name = StringField('Имя студента', validators=[DataRequired()])
+    name = StringField('ФИО студента', validators=[DataRequired()])
     admission_year = IntegerField('Год поступления', validators=[DataRequired()])
-    education_form = SelectField('Форма обучения', choices=[('day', 'Дневная'), ('evening', 'Вечерняя'), ('distance', 'Дистанционная')], validators=[DataRequired()])
-    group_name = StringField('Группа', validators=[DataRequired()])
+    education_form = SelectField('Форма обучения', choices=[('дневная', 'Дневная'), ('вечерняя', 'Вечерняя'), ('заочная', 'Заочная')], validators=[DataRequired()])
+    group_name = StringField('Номер группы', validators=[DataRequired()])
     user_id = IntegerField('ID пользователя', validators=[DataRequired()])
-    submit = SubmitField('Добавить студента')
+    submit = SubmitField('Сохранить')
 
 class SubjectForm(FlaskForm):
-    name = StringField('Название предмета', validators=[DataRequired()])
+    name = StringField('Название дисциплины', validators=[DataRequired()])
     semester = IntegerField('Семестр', validators=[DataRequired()])
     hours = IntegerField('Количество часов', validators=[DataRequired()])
-    assessment_type = SelectField('Тип оценки', choices=[('exam', 'Экзамен'), ('credit', 'Зачет')], validators=[DataRequired()])
-    submit = SubmitField('Добавить предмет')
+    assessment_type = StringField('Форма отчетности', validators=[DataRequired()])
+    submit = SubmitField('Сохранить')
 
 class GradeForm(FlaskForm):
     year = IntegerField('Год', validators=[DataRequired()])
@@ -49,4 +52,4 @@ class GradeForm(FlaskForm):
     student_id = IntegerField('ID студента', validators=[DataRequired()])
     subject_id = IntegerField('ID предмета', validators=[DataRequired()])
     grade = StringField('Оценка', validators=[DataRequired()])
-    submit = SubmitField('Добавить оценку')
+    submit = SubmitField('Сохранить')

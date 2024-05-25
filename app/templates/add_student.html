@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Добавить студента{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Добавить студента</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.name.label(class="form-control-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.admission_year.label(class="form-control-label") }}
+            {{ form.admission_year(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.education_form.label(class="form-control-label") }}
+            {{ form.education_form(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.group_name.label(class="form-control-label") }}
+            {{ form.group_name(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.user_id.label(class="form-control-label") }}
+            {{ form.user_id(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

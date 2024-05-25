@@ -4,67 +4,15 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center">Управление оценками</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.year.label(class="form-label") }}
-            {{ form.year(class="form-control") }}
-            {% if form.year.errors %}
-                <div class="invalid-feedback d-block">
-                {% for error in form.year.errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            {{ form.semester.label(class="form-label") }}
-            {{ form.semester(class="form-control") }}
-            {% if form.semester.errors %}
-                <div class="invalid-feedback d-block">
-                {% for error in form.semester.errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            {{ form.student_id.label(class="form-label") }}
-            {{ form.student_id(class="form-control") }}
-            {% if form.student_id.errors %}
-                <div class="invalid-feedback d-block">
-                {% for error in form.student_id.errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            {{ form.subject_id.label(class="form-label") }}
-            {{ form.subject_id(class="form-control") }}
-            {% if form.subject_id.errors %}
-                <div class="invalid-feedback d-block">
-                {% for error in form.subject_id.errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            {{ form.grade.label(class="form-label") }}
-            {{ form.grade(class="form-control") }}
-            {% if form.grade.errors %}
-                <div class="invalid-feedback d-block">
-                {% for error in form.grade.errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-        <div class="text-center">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
-    </form>
+    <h1>Управление оценками</h1>
+    <a class="btn btn-primary mb-3" href="{{ url_for('main.add_grade') }}">Добавить оценку</a>
+    <ul class="list-group">
+        {% for grade in grades %}
+            <li class="list-group-item">
+                Студент: {{ grade.student.name }} - Предмет: {{ grade.subject.name }} - Оценка: {{ grade.grade }}
+                <a class="btn btn-sm btn-warning float-right" href="{{ url_for('main.edit_grade', grade_id=grade.id) }}">Редактировать</a>
+            </li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}
