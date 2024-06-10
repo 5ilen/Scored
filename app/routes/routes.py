@@ -301,36 +301,6 @@ def manage_grades():
 
     return render_template('manage_grades.html', grades=grades, sort_by=sort_by, filter_by=filter_by)
 
-@main.route("/subject/delete/<int:subject_id>", methods=['POST'])
-@login_required
-def delete_subject(subject_id):
-    if current_user.role != 'teacher':
-        return redirect(url_for('main.home'))
-    subject = Subject.query.get_or_404(subject_id)
-    try:
-        db.session.delete(subject)
-        db.session.commit()
-        flash('Предмет удален!', 'success')
-    except IntegrityError:
-        db.session.rollback()
-        flash('Ошибка удаления предмета!', 'danger')
-    return redirect(url_for('main.manage_subjects'))
-
-@main.route("/student/delete/<int:student_id>", methods=['POST'])
-@login_required
-def delete_student(student_id):
-    if current_user.role != 'teacher':
-        return redirect(url_for('main.home'))
-    student = Student.query.get_or_404(student_id)
-    try:
-        db.session.delete(student)
-        db.session.commit()
-        flash('Студент удален!', 'success')
-    except IntegrityError:
-        db.session.rollback()
-        flash('Ошибка удаления студента!', 'danger')
-    return redirect(url_for('main.manage_students'))
-
 @main.route("/grade/delete/<int:grade_id>", methods=['POST'])
 @login_required
 def delete_grade(grade_id):

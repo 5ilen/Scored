@@ -45,9 +45,6 @@
                 <td>{{ subject.assessment_type }}</td>
                 <td>
                     <a href="{{ url_for('main.edit_subject', subject_id=subject.id) }}" class="btn btn-warning btn-sm">Редактировать</a>
-                    <form action="{{ url_for('main.delete_subject', subject_id=subject.id) }}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
-                    </form>
                 </td>
             </tr>
             {% endfor %}
